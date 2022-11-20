@@ -1,7 +1,8 @@
 import os
 from typing import Union
 
-import httpx
+# import httpx
+import requests
 from authlib.integrations.starlette_client import OAuth
 from fastapi import FastAPI, HTTPException
 from fastapi.params import Depends
@@ -108,12 +109,13 @@ async def user_logout(request: Request):
             headers={"Client-Error": "Refresh Token State"},
         )
     else:
-        client = httpx.AsyncClient(http2=True)
+        # client = httpx.AsyncClient(http2=True)
         data = {"client_id": client_id, "client_secret": client_secret, "refresh_token": str(refresh_token)}
         headers = {
             "content-type": "application/x-www-form-urlencoded"
         }
-        result = await client.post(url=end_session_endpoint, data=data, headers=headers)
+        # result = await client.post(url=end_session_endpoint, data=data, headers=headers)
+        result = requests.post(url=end_session_endpoint, data=data, headers=headers)
         if result.status_code == 204:
             request.session["refresh_token"] = ''
             request.session["user"] = None
